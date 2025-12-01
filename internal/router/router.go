@@ -38,6 +38,7 @@ func SetupRoutes(r *gin.Engine) {
 		{
 			me.GET("", userHandler.Profile)
 			me.POST("/bookings", userHandler.CreateMyBooking)
+			me.GET("/bookings", userHandler.GetMyBookings)
 		}
 
 		rooms := api.Group("/rooms")

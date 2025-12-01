@@ -320,9 +320,12 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/model.BookingResponse'
-            type: array
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.BookingResponse'
+                type: array
+            type: object
       summary: Get bookings for a specific room
       tags:
       - bookings
@@ -426,6 +429,51 @@ paths:
       tags:
       - me
   /me/bookings:
+    get:
+      description: Get a list of all bookings for the currently authenticated user
+      parameters:
+      - description: Filter by status (e.g., 'active', 'cancelled')
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of user's bookings
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.BookingResponse'
+                type: array
+            type: object
+        "400":
+          description: Invalid user ID
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+        "500":
+          description: Failed to fetch bookings
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user's bookings
+      tags:
+      - me
     post:
       consumes:
       - application/json

@@ -177,3 +177,64 @@ func (h *UserHandler) Profile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
+
+// GetMyBookings godoc
+// @Summary Get current user's bookings
+// @Description Get a list of all bookings for the currently authenticated user
+// @Tags me
+// @Produce json
+// @Security BearerAuth
+// @Param status query string false "Filter by status (e.g., 'active', 'cancelled')"
+// @Success 200 {object} object{data=[]model.BookingResponse} "List of user's bookings"
+// @Failure 400 {object} object{error=string} "Invalid user ID"
+// @Failure 401 {object} object{error=string} "Unauthorized"
+// @Failure 500 {object} object{error=string} "Failed to fetch bookings"
+// @Router /me/bookings [get]
+func (h *UserHandler) GetMyBookings(c *gin.Context) {
+	// Get user ID from context (set by auth middleware)
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userUUID, err := uuid.Parse(userID.(string))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id"})
+		return
+	}
+
+	// Get status filter from query parameter
+	status := c.Query("status")
+	var statusPtr *string
+	if status != "" {
+		statusPtr = &status
+	}
+
+	// Get user's bookings
+	bookings, err := h.bookingRepo.FindByUserID(userUUID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch bookings"})
+		return
+	}
+
+	// Apply status filter if provided
+	var filteredBookings []model.Booking
+	if statusPtr != nil && *statusPtr != "" {
+		for _, booking := range bookings {
+			if booking.Status == model.BookingStatus(*statusPtr) {
+				filteredBookings = append(filteredBookings, booking)
+			}
+		}
+	} else {
+		filteredBookings = bookings
+	}
+
+	// Convert to response objects
+	responses := make([]model.BookingResponse, len(filteredBookings))
+	for i, booking := range filteredBookings {
+		responses[i] = booking.ToResponse()
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": responses})
+}
