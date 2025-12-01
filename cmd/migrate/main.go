@@ -68,7 +68,6 @@ func main() {
 			log.Fatalf("❌ Failed to drop tables: %v", err)
 		}
 		fmt.Println("✅ Successfully dropped all tables")
-		return
 	}
 
 	// Migrate schema
