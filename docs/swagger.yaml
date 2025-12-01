@@ -329,26 +329,48 @@ paths:
   /bookings/room/{room_id}/{date}:
     get:
       description: Get a list of all bookings for a specific room on a specific date
+        with optional status filter
       parameters:
       - description: Room ID
         in: path
         name: room_id
         required: true
         type: string
-      - description: Date
+      - description: 'Date (format: YYYY-MM-DD)'
         in: path
         name: date
         required: true
+        type: string
+      - description: Filter by status (e.g., 'active', 'cancelled')
+        in: query
+        name: status
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: List of bookings
           schema:
-            items:
-              $ref: '#/definitions/model.BookingResponse'
-            type: array
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.BookingResponse'
+                type: array
+            type: object
+        "400":
+          description: Invalid room ID or date format
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
+        "500":
+          description: Failed to fetch room bookings
+          schema:
+            properties:
+              error:
+                type: string
+            type: object
       summary: Get bookings for a specific room on a specific date
       tags:
       - bookings

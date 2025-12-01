@@ -13,7 +13,7 @@ type BookingRepository interface {
 	FindByID(id uuid.UUID) (*model.Booking, error)
 	FindByUserID(userID uuid.UUID) ([]model.Booking, error)
 	FindByRoomID(roomID uuid.UUID) ([]model.Booking, error)
-	FindByRoomIDAndDate(roomID uuid.UUID, date time.Time) ([]model.Booking, error)
+	FindByRoomIDAndDate(roomID uuid.UUID, date time.Time, status *string) ([]model.Booking, error)
 	Update(booking *model.Booking) error
 	Cancel(id uuid.UUID) error
 	IsRoomAvailable(roomID uuid.UUID, startTime, endTime time.Time, excludeID *uuid.UUID) (bool, error)
@@ -108,8 +108,8 @@ func (r *bookingRepository) GetUpcomingBookings() ([]model.Booking, error) {
 	return bookings, err
 }
 
-// FindByRoomIDAndDate returns all bookings for a specific room on a specific date
-func (r *bookingRepository) FindByRoomIDAndDate(roomID uuid.UUID, date time.Time) ([]model.Booking, error) {
+// FindByRoomIDAndDate returns all bookings for a specific room on a specific date with optional status filter
+func (r *bookingRepository) FindByRoomIDAndDate(roomID uuid.UUID, date time.Time, status *string) ([]model.Booking, error) {
 	var bookings []model.Booking
 
 	// Start of the day (00:00:00)
@@ -117,13 +117,18 @@ func (r *bookingRepository) FindByRoomIDAndDate(roomID uuid.UUID, date time.Time
 	// End of the day (23:59:59.999999999)
 	endOfDay := startOfDay.Add(24*time.Hour - time.Nanosecond)
 
-	err := r.db.
+	query := r.db.
 		Preload("Room").
 		Preload("User").
 		Where("room_id = ?", roomID).
-		Where("start_time >= ? AND end_time <= ?", startOfDay, endOfDay).
-		Order("start_time").
-		Find(&bookings).Error
+		Where("start_time >= ? AND end_time <= ?", startOfDay, endOfDay)
+
+	// Add status filter if provided
+	if status != nil && *status != "" {
+		query = query.Where("status = ?", *status)
+	}
+
+	err := query.Order("start_time").Find(&bookings).Error
 
 	if err != nil {
 		return nil, err

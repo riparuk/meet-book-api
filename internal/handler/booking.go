@@ -281,7 +281,7 @@ func (h *BookingHandler) GetUpcomingBookings(c *gin.Context) {
 // @Tags bookings
 // @Produce json
 // @Param room_id path string true "Room ID"
-// @Success 200 {array} model.BookingResponse
+// @Success 200 {object} object{data=[]model.BookingResponse}
 // @Router /bookings/room/{room_id} [get]
 func (h *BookingHandler) GetRoomBookings(c *gin.Context) {
 	roomID, err := uuid.Parse(c.Param("room_id"))
@@ -306,12 +306,15 @@ func (h *BookingHandler) GetRoomBookings(c *gin.Context) {
 
 // GetRoomBookingsByDate godoc
 // @Summary Get bookings for a specific room on a specific date
-// @Description Get a list of all bookings for a specific room on a specific date
+// @Description Get a list of all bookings for a specific room on a specific date with optional status filter
 // @Tags bookings
 // @Produce json
 // @Param room_id path string true "Room ID"
-// @Param date path string true "Date"
-// @Success 200 {array} model.BookingResponse
+// @Param date path string true "Date (format: YYYY-MM-DD)"
+// @Param status query string false "Filter by status (e.g., 'active', 'cancelled')"
+// @Success 200 {object} object{data=[]model.BookingResponse} "List of bookings"
+// @Failure 400 {object} object{error=string} "Invalid room ID or date format"
+// @Failure 500 {object} object{error=string} "Failed to fetch room bookings"
 // @Router /bookings/room/{room_id}/{date} [get]
 func (h *BookingHandler) GetRoomBookingsByDate(c *gin.Context) {
 	roomID, err := uuid.Parse(c.Param("room_id"))
@@ -322,11 +325,18 @@ func (h *BookingHandler) GetRoomBookingsByDate(c *gin.Context) {
 
 	date, err := time.Parse("2006-01-02", c.Param("date"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid date format"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid date format, expected YYYY-MM-DD"})
 		return
 	}
 
-	bookings, err := h.repo.FindByRoomIDAndDate(roomID, date)
+	// Get status from query parameter (optional)
+	status := c.Query("status")
+	var statusPtr *string
+	if status != "" {
+		statusPtr = &status
+	}
+
+	bookings, err := h.repo.FindByRoomIDAndDate(roomID, date, statusPtr)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch room bookings"})
 		return

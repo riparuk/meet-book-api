@@ -159,7 +159,7 @@ const docTemplate = `{
         },
         "/bookings/room/{room_id}/{date}": {
             "get": {
-                "description": "Get a list of all bookings for a specific room on a specific date",
+                "description": "Get a list of all bookings for a specific room on a specific date with optional status filter",
                 "produces": [
                     "application/json"
                 ],
@@ -177,19 +177,52 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Date",
+                        "description": "Date (format: YYYY-MM-DD)",
                         "name": "date",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by status (e.g., 'active', 'cancelled')",
+                        "name": "status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "List of bookings",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.BookingResponse"
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/model.BookingResponse"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid room ID or date format",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch room bookings",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }

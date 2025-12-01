@@ -53,11 +53,13 @@ func (h *AuthHandler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token": token,
-		"user": gin.H{
-			"id":    user.ID,
-			"email": user.Email,
-			"name":  user.Name,
+		"data": gin.H{
+			"token": token,
+			"user": gin.H{
+				"id":    user.ID,
+				"email": user.Email,
+				"name":  user.Name,
+			},
 		},
 	})
 }
@@ -103,11 +105,13 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "User registered successfully",
-		"user": gin.H{
-			"id":    user.ID,
-			"email": user.Email,
-			"name":  user.Name,
+		"data": gin.H{
+			"message": "User registered successfully",
+			"user": gin.H{
+				"id":    user.ID,
+				"email": user.Email,
+				"name":  user.Name,
+			},
 		},
 	})
 }
