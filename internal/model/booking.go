@@ -38,6 +38,12 @@ type CreateBookingInput struct {
 	EndTime   time.Time `json:"end_time" binding:"required"`
 }
 
+type CreateMyBookingInput struct {
+	RoomID    uuid.UUID `json:"room_id" binding:"required"`
+	StartTime time.Time `json:"start_time" binding:"required"`
+	EndTime   time.Time `json:"end_time" binding:"required"`
+}
+
 type UpdateBookingInput struct {
 	Status    *BookingStatus `json:"status,omitempty"`
 	StartTime *time.Time     `json:"start_time,omitempty"`

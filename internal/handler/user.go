@@ -11,11 +11,87 @@ import (
 )
 
 type UserHandler struct {
-	repo repository.UserRepository
+	userRepo    repository.UserRepository
+	bookingRepo repository.BookingRepository
 }
 
-func NewUserHandler(repo repository.UserRepository) *UserHandler {
-	return &UserHandler{repo}
+func NewUserHandler(userRepo repository.UserRepository, bookingRepo repository.BookingRepository) *UserHandler {
+	return &UserHandler{
+		userRepo:    userRepo,
+		bookingRepo: bookingRepo,
+	}
+}
+
+// CreateMyBooking godoc
+// @Summary Create a new booking for the authenticated user
+// @Description Create a new room booking for the currently authenticated user
+// @Tags me
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param input body model.CreateMyBookingInput true "Booking details"
+// @Success 201 {object} model.BookingResponse
+// @Router /me/bookings [post]
+func (h *UserHandler) CreateMyBooking(c *gin.Context) {
+	// Get user ID from context (set by auth middleware)
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+		return
+	}
+
+	userUUID, err := uuid.Parse(userID.(string))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user id"})
+		return
+	}
+
+	var input model.CreateMyBookingInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Create booking object
+	booking := model.Booking{
+		RoomID:    input.RoomID,
+		UserID:    userUUID,
+		StartTime: input.StartTime,
+		EndTime:   input.EndTime,
+		Status:    model.BookingStatusActive,
+	}
+
+	// Validate booking
+	if err := booking.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Check if room is available
+	available, err := h.bookingRepo.IsRoomAvailable(input.RoomID, input.StartTime, input.EndTime, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to check room availability"})
+		return
+	}
+	if !available {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "room is not available for the selected time slot"})
+		return
+	}
+
+	// Create the booking
+	if err := h.bookingRepo.Create(&booking); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create booking"})
+		return
+	}
+
+	// Get the created booking with related data
+	createdBooking, err := h.bookingRepo.FindByID(booking.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch created booking"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"data": createdBooking.ToResponse()})
 }
 
 // GetUsers godoc
@@ -27,7 +103,7 @@ func NewUserHandler(repo repository.UserRepository) *UserHandler {
 // @Success 200 {array} model.User
 // @Router /users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
-	users, err := h.repo.FindAll()
+	users, err := h.userRepo.FindAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -51,13 +127,6 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	// check if email already exists
-	_, err := h.repo.FindByEmail(input.Email)
-	if err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "email already exists"})
-		return
-	}
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to hash password"})
@@ -69,8 +138,9 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		Email:    input.Email,
 		Password: string(hashedPassword),
 	}
-	if err := h.repo.Create(&user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+
+	if err := h.userRepo.Create(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create user"})
 		return
 	}
 
@@ -86,27 +156,24 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Success 200 {object} model.User
 // @Router /me [get]
 func (h *UserHandler) Profile(c *gin.Context) {
-	userIDStr, exists := c.Get("user_id")
+	// Get user ID from context (set by auth middleware)
+	userID, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		return
 	}
 
-	userID, err := uuid.Parse(userIDStr.(string))
-	if err != nil {
+	userIDStr, ok := userID.(string)
+	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user id"})
 		return
 	}
 
-	user, err := h.repo.FindByID(userID.String())
+	user, err := h.userRepo.FindByID(userIDStr)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":    user.ID,
-		"email": user.Email,
-		"name":  user.Name,
-	})
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }

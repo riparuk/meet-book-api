@@ -47,6 +47,19 @@ definitions:
     - start_time
     - user_id
     type: object
+  model.CreateMyBookingInput:
+    properties:
+      end_time:
+        type: string
+      room_id:
+        type: string
+      start_time:
+        type: string
+    required:
+    - end_time
+    - room_id
+    - start_time
+    type: object
   model.CreateRoomInput:
     properties:
       capacity:
@@ -388,6 +401,30 @@ paths:
       security:
       - BearerAuth: []
       summary: Get current user profile
+      tags:
+      - me
+  /me/bookings:
+    post:
+      consumes:
+      - application/json
+      description: Create a new room booking for the currently authenticated user
+      parameters:
+      - description: Booking details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateMyBookingInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new booking for the authenticated user
       tags:
       - me
   /rooms:

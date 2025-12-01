@@ -9,14 +9,13 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
-
 	authRepo := repository.NewUserRepository(database.DB)
 	userRepo := repository.NewUserRepository(database.DB)
 	roomRepo := repository.NewRoomRepository(database.DB)
 	bookingRepo := repository.NewBookingRepository(database.DB)
 
 	authHandler := handler.NewAuthHandler(authRepo)
-	userHandler := handler.NewUserHandler(userRepo)
+	userHandler := handler.NewUserHandler(userRepo, bookingRepo)
 	roomHandler := handler.NewRoomHandler(roomRepo)
 	bookingHandler := handler.NewBookingHandler(bookingRepo)
 
@@ -38,6 +37,7 @@ func SetupRoutes(r *gin.Engine) {
 		me.Use(middleware.JWTAuthMiddleware())
 		{
 			me.GET("", userHandler.Profile)
+			me.POST("/bookings", userHandler.CreateMyBooking)
 		}
 
 		rooms := api.Group("/rooms")
