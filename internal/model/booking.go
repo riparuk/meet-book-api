@@ -27,8 +27,8 @@ type Booking struct {
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 
 	// Relationships
-	Room Room `json:"-" gorm:"foreignKey:RoomID"`
-	User User `json:"-" gorm:"foreignKey:UserID"`
+	Room Room `json:"room" gorm:"foreignKey:RoomID"`
+	User User `json:"user" gorm:"foreignKey:UserID"`
 }
 
 type CreateBookingInput struct {
@@ -53,6 +53,9 @@ type BookingResponse struct {
 	Status    BookingStatus `json:"status"`
 	CreatedAt time.Time     `json:"created_at"`
 	UpdatedAt time.Time     `json:"updated_at"`
+
+	Room Room `json:"room"`
+	User User `json:"user"`
 }
 
 // ToResponse converts a Booking to a BookingResponse
@@ -66,6 +69,8 @@ func (b *Booking) ToResponse() BookingResponse {
 		Status:    b.Status,
 		CreatedAt: b.CreatedAt,
 		UpdatedAt: b.UpdatedAt,
+		Room:      b.Room,
+		User:      b.User,
 	}
 }
 

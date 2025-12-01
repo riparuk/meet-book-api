@@ -592,6 +592,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "room": {
+                    "$ref": "#/definitions/model.Room"
+                },
                 "room_id": {
                     "type": "string"
                 },
@@ -603,6 +606,9 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 },
                 "user_id": {
                     "type": "string"

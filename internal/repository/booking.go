@@ -52,6 +52,7 @@ func (r *bookingRepository) FindByUserID(userID uuid.UUID) ([]model.Booking, err
 	var bookings []model.Booking
 	err := r.db.
 		Preload("Room").
+		Preload("User").
 		Where("user_id = ?", userID).
 		Order("start_time DESC").
 		Find(&bookings).Error
@@ -61,6 +62,8 @@ func (r *bookingRepository) FindByUserID(userID uuid.UUID) ([]model.Booking, err
 func (r *bookingRepository) FindByRoomID(roomID uuid.UUID) ([]model.Booking, error) {
 	var bookings []model.Booking
 	err := r.db.
+		Preload("Room").
+		Preload("User").
 		Where("room_id = ?", roomID).
 		Order("start_time DESC").
 		Find(&bookings).Error
@@ -115,6 +118,8 @@ func (r *bookingRepository) FindByRoomIDAndDate(roomID uuid.UUID, date time.Time
 	endOfDay := startOfDay.Add(24*time.Hour - time.Nanosecond)
 
 	err := r.db.
+		Preload("Room").
+		Preload("User").
 		Where("room_id = ?", roomID).
 		Where("start_time >= ? AND end_time <= ?", startOfDay, endOfDay).
 		Order("start_time").

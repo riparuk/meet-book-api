@@ -585,6 +585,9 @@
                 "id": {
                     "type": "string"
                 },
+                "room": {
+                    "$ref": "#/definitions/model.Room"
+                },
                 "room_id": {
                     "type": "string"
                 },
@@ -596,6 +599,9 @@
                 },
                 "updated_at": {
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
                 },
                 "user_id": {
                     "type": "string"

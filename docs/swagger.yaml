@@ -8,6 +8,8 @@ definitions:
         type: string
       id:
         type: string
+      room:
+        $ref: '#/definitions/model.Room'
       room_id:
         type: string
       start_time:
@@ -16,6 +18,8 @@ definitions:
         $ref: '#/definitions/model.BookingStatus'
       updated_at:
         type: string
+      user:
+        $ref: '#/definitions/model.User'
       user_id:
         type: string
     type: object
