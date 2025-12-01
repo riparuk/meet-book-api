@@ -1,5 +1,17 @@
 basePath: /api
 definitions:
+  model.CreateRoomInput:
+    properties:
+      capacity:
+        example: 10
+        type: integer
+      name:
+        example: Meeting Room 1
+        type: string
+    required:
+    - capacity
+    - name
+    type: object
   model.CreateUserInput:
     properties:
       email:
@@ -44,6 +56,31 @@ definitions:
     - name
     - password
     type: object
+  model.Room:
+    properties:
+      capacity:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.UpdateRoomInput:
+    properties:
+      capacity:
+        example: 10
+        type: integer
+      name:
+        example: Meeting Room 1
+        type: string
+    required:
+    - capacity
+    - name
+    type: object
   model.User:
     properties:
       created_at:
@@ -61,12 +98,12 @@ info:
   contact:
     email: support@swagger.io
     name: API Support
-  description: API documentation for Go Gin Starter Simple
+  description: API documentation for Meet Book API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Go Gin Starter Simple
+  title: Meet Book API
   version: 1.0.0
 paths:
   /auth/login:
@@ -128,6 +165,103 @@ paths:
       summary: Get current user profile
       tags:
       - me
+  /rooms:
+    get:
+      description: Get a list of all meeting rooms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Room'
+            type: array
+      summary: Get all rooms
+      tags:
+      - rooms
+    post:
+      consumes:
+      - application/json
+      description: Create a new meeting room
+      parameters:
+      - description: Room details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateRoomInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Room'
+      summary: Create a new room
+      tags:
+      - rooms
+  /rooms/{id}:
+    delete:
+      description: Delete a room by ID
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a room
+      tags:
+      - rooms
+    get:
+      description: Get a room by its ID
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Room'
+      summary: Get a room by ID
+      tags:
+      - rooms
+    put:
+      consumes:
+      - application/json
+      description: Update an existing room
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Room details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateRoomInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Room'
+      summary: Update a room
+      tags:
+      - rooms
   /users:
     get:
       consumes:

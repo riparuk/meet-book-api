@@ -12,9 +12,11 @@ func SetupRoutes(r *gin.Engine) {
 
 	authRepo := repository.NewUserRepository(database.DB)
 	userRepo := repository.NewUserRepository(database.DB)
+	roomRepo := repository.NewRoomRepository(database.DB)
 
 	authHandler := handler.NewAuthHandler(authRepo)
 	userHandler := handler.NewUserHandler(userRepo)
+	roomHandler := handler.NewRoomHandler(roomRepo)
 
 	api := r.Group("/api")
 	{
@@ -34,6 +36,15 @@ func SetupRoutes(r *gin.Engine) {
 		me.Use(middleware.JWTAuthMiddleware())
 		{
 			me.GET("", userHandler.Profile)
+		}
+
+		rooms := api.Group("/rooms")
+		{
+			rooms.GET("", roomHandler.GetRooms)
+			rooms.POST("", roomHandler.CreateRoom)
+			rooms.GET("/:id", roomHandler.GetRoom)
+			rooms.PUT("/:id", roomHandler.UpdateRoom)
+			rooms.DELETE("/:id", roomHandler.DeleteRoom)
 		}
 	}
 

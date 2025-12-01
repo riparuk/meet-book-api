@@ -12,6 +12,7 @@ import (
 
 var allModels = []interface{}{
 	&model.User{},
+	&model.Room{},
 }
 
 func main() {
