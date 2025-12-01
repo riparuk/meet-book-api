@@ -13,10 +13,12 @@ func SetupRoutes(r *gin.Engine) {
 	authRepo := repository.NewUserRepository(database.DB)
 	userRepo := repository.NewUserRepository(database.DB)
 	roomRepo := repository.NewRoomRepository(database.DB)
+	bookingRepo := repository.NewBookingRepository(database.DB)
 
 	authHandler := handler.NewAuthHandler(authRepo)
 	userHandler := handler.NewUserHandler(userRepo)
 	roomHandler := handler.NewRoomHandler(roomRepo)
+	bookingHandler := handler.NewBookingHandler(bookingRepo)
 
 	api := r.Group("/api")
 	{
@@ -45,6 +47,18 @@ func SetupRoutes(r *gin.Engine) {
 			rooms.GET("/:id", roomHandler.GetRoom)
 			rooms.PUT("/:id", roomHandler.UpdateRoom)
 			rooms.DELETE("/:id", roomHandler.DeleteRoom)
+		}
+
+		bookings := api.Group("/bookings")
+		{
+			bookings.GET("/upcoming", bookingHandler.GetUpcomingBookings)
+			bookings.POST("", bookingHandler.CreateBooking)
+			bookings.GET("/:id", bookingHandler.GetBooking)
+			bookings.PUT("/:id", bookingHandler.UpdateBooking)
+			bookings.GET("/room/:room_id", bookingHandler.GetRoomBookings)
+			bookings.GET("/room/:room_id/:date", bookingHandler.GetRoomBookingsByDate)
+			bookings.POST("/:id/cancel", bookingHandler.CancelBooking)
+			bookings.GET("/users/:user_id", bookingHandler.GetUserBookings)
 		}
 	}
 

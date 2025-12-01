@@ -1,5 +1,48 @@
 basePath: /api
 definitions:
+  model.BookingResponse:
+    properties:
+      created_at:
+        type: string
+      end_time:
+        type: string
+      id:
+        type: string
+      room_id:
+        type: string
+      start_time:
+        type: string
+      status:
+        $ref: '#/definitions/model.BookingStatus'
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  model.BookingStatus:
+    enum:
+    - active
+    - cancelled
+    type: string
+    x-enum-varnames:
+    - BookingStatusActive
+    - BookingStatusCancelled
+  model.CreateBookingInput:
+    properties:
+      end_time:
+        type: string
+      room_id:
+        type: string
+      start_time:
+        type: string
+      user_id:
+        type: string
+    required:
+    - end_time
+    - room_id
+    - start_time
+    - user_id
+    type: object
   model.CreateRoomInput:
     properties:
       capacity:
@@ -68,6 +111,15 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  model.UpdateBookingInput:
+    properties:
+      end_time:
+        type: string
+      start_time:
+        type: string
+      status:
+        $ref: '#/definitions/model.BookingStatus'
     type: object
   model.UpdateRoomInput:
     properties:
@@ -150,6 +202,175 @@ paths:
       summary: Register
       tags:
       - auth
+  /bookings:
+    post:
+      consumes:
+      - application/json
+      description: Create a new room booking
+      parameters:
+      - description: Booking details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateBookingInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      summary: Create a new booking
+      tags:
+      - bookings
+  /bookings/{id}:
+    get:
+      description: Get a booking by its ID
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      summary: Get a booking by ID
+      tags:
+      - bookings
+    put:
+      consumes:
+      - application/json
+      description: Update an existing booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Booking update details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateBookingInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      summary: Update a booking
+      tags:
+      - bookings
+  /bookings/{id}/cancel:
+    post:
+      description: Cancel an existing booking
+      parameters:
+      - description: Booking ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BookingResponse'
+      summary: Cancel a booking
+      tags:
+      - bookings
+  /bookings/room/{room_id}:
+    get:
+      description: Get a list of all bookings for a specific room
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BookingResponse'
+            type: array
+      summary: Get bookings for a specific room
+      tags:
+      - bookings
+  /bookings/room/{room_id}/{date}:
+    get:
+      description: Get a list of all bookings for a specific room on a specific date
+      parameters:
+      - description: Room ID
+        in: path
+        name: room_id
+        required: true
+        type: string
+      - description: Date
+        in: path
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BookingResponse'
+            type: array
+      summary: Get bookings for a specific room on a specific date
+      tags:
+      - bookings
+  /bookings/upcoming:
+    get:
+      description: Get a list of all upcoming bookings
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BookingResponse'
+            type: array
+      summary: Get upcoming bookings
+      tags:
+      - bookings
+  /bookings/users/{user_id}:
+    get:
+      description: Get all bookings for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.BookingResponse'
+            type: array
+      summary: Get all bookings for a user
+      tags:
+      - bookings
   /me:
     get:
       description: Get the authenticated user's profile
