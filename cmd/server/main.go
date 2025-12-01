@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -55,5 +56,6 @@ func main() {
 	router.SetupRoutes(r)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	log.Println("🟢 Server running on port 8080, swagger on http://localhost:8080/swagger/index.html")
 	r.Run(":8080")
 }
