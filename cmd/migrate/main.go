@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/riparuk/go-gin-starter-simple/internal/database"
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
+	"github.com/riparuk/meet-book-api/internal/database"
+	"github.com/riparuk/meet-book-api/internal/model"
 )
 
 var allModels = []interface{}{

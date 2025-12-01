@@ -31,10 +31,10 @@ test:
 
 # Build
 build:
-	go build -o bin/go-gin-starter-simple cmd/server/main.go
+	go build -o bin/meet-book-api cmd/server/main.go
 
 docker-build:
-	docker build -t go-gin-starter-simple-dev .
+	docker build -t meet-book-api-dev .
 
 docker-run:
-	docker run -p 8080:8080 --rm go-gin-starter-simple-dev
+	docker run -p 8080:8080 --rm meet-book-api-dev

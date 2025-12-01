@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/riparuk/go-gin-starter-simple/internal/database"
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
-	"github.com/riparuk/go-gin-starter-simple/internal/repository"
+	"github.com/riparuk/meet-book-api/internal/database"
+	"github.com/riparuk/meet-book-api/internal/model"
+	"github.com/riparuk/meet-book-api/internal/repository"
 )
 
 var jwtSecret = []byte(os.Getenv("JWT_SECRET"))

@@ -1,4 +1,4 @@
-module github.com/riparuk/go-gin-starter-simple
+module github.com/riparuk/meet-book-api
 
 go 1.23.2
 

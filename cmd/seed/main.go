@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/riparuk/go-gin-starter-simple/internal/database"
+	"github.com/riparuk/meet-book-api/internal/database"
 )
 
 func main() {

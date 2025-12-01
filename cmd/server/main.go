@@ -8,16 +8,16 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/riparuk/go-gin-starter-simple/docs"
-	"github.com/riparuk/go-gin-starter-simple/internal/database"
-	"github.com/riparuk/go-gin-starter-simple/internal/router"
+	"github.com/riparuk/meet-book-api/docs"
+	"github.com/riparuk/meet-book-api/internal/database"
+	"github.com/riparuk/meet-book-api/internal/router"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Go Gin Starter Simple
+// @title Meet Book API
 // @version 1.0.0
-// @description API documentation for Go Gin Starter Simple
+// @description API documentation for Meet Book API
 // @BasePath /api
 // @securityDefinitions.apikey BearerAuth
 // @in header
@@ -32,7 +32,7 @@ import (
 func init() {
 	_ = godotenv.Load(".env") // Load file .env
 
-	docs.SwaggerInfo.Host = os.Getenv("SWAGGER_HOST")                // misalnya: "localhost:8080" atau "go-gin-starter-simple-api.a.run.app"
+	docs.SwaggerInfo.Host = os.Getenv("SWAGGER_HOST")                // misalnya: "localhost:8080" atau "meet-book-api-api.a.run.app"
 	docs.SwaggerInfo.Schemes = []string{os.Getenv("SWAGGER_SCHEME")} // atau "http" untuk lokal
 }
 

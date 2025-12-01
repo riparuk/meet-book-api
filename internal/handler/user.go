@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
-	"github.com/riparuk/go-gin-starter-simple/internal/repository"
+	"github.com/riparuk/meet-book-api/internal/model"
+	"github.com/riparuk/meet-book-api/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

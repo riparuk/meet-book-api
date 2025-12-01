@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/riparuk/go-gin-starter-simple/internal/utils"
+	"github.com/riparuk/meet-book-api/internal/utils"
 )
 
 // JWTAuthMiddleware verifies JWT token and injects userID into context

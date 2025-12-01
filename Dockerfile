@@ -1,6 +1,6 @@
 FROM golang:1.23-alpine
 
-WORKDIR /go-gin-starter-simple
+WORKDIR /meet-book-api
 
 COPY . .
 
@@ -8,9 +8,9 @@ COPY . .
 RUN go install github.com/swaggo/swag/cmd/swag@latest && \
     /go/bin/swag init -g cmd/server/main.go -o ./docs/
 
-RUN go build -o go-gin-starter-simple cmd/server/main.go
+RUN go build -o meet-book-api cmd/server/main.go
 
 EXPOSE 8080
 
-CMD ["./go-gin-starter-simple"]
+CMD ["./meet-book-api"]
 

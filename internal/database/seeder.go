@@ -5,7 +5,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
+	"github.com/riparuk/meet-book-api/internal/model"
 )
 
 func Seed() {

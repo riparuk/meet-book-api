@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
-	"github.com/riparuk/go-gin-starter-simple/internal/repository"
-	"github.com/riparuk/go-gin-starter-simple/internal/utils"
+	"github.com/riparuk/meet-book-api/internal/model"
+	"github.com/riparuk/meet-book-api/internal/repository"
+	"github.com/riparuk/meet-book-api/internal/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"

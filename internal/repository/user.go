@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/riparuk/go-gin-starter-simple/internal/model"
+	"github.com/riparuk/meet-book-api/internal/model"
 	"gorm.io/gorm"
 )
 
