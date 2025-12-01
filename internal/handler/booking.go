@@ -34,6 +34,21 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 		return
 	}
 
+	// Buat objek Booking dari input
+	booking := model.Booking{
+		RoomID:    input.RoomID,
+		UserID:    input.UserID,
+		StartTime: input.StartTime,
+		EndTime:   input.EndTime,
+		Status:    model.BookingStatusActive,
+	}
+
+	// Validasi booking
+	if err := booking.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Check if room is available
 	available, err := h.repo.IsRoomAvailable(input.RoomID, input.StartTime, input.EndTime, nil)
 	if err != nil {
@@ -45,20 +60,20 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 		return
 	}
 
-	booking := model.Booking{
-		RoomID:    input.RoomID,
-		UserID:    input.UserID,
-		StartTime: input.StartTime,
-		EndTime:   input.EndTime,
-		Status:    model.BookingStatusActive,
-	}
-
+	// Create the booking
 	if err := h.repo.Create(&booking); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create booking"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": booking.ToResponse()})
+	// Ambil data booking yang baru dibuat untuk mendapatkan data lengkap
+	createdBooking, err := h.repo.FindByID(booking.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch created booking"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, createdBooking.ToResponse())
 }
 
 // GetBooking godoc
@@ -149,6 +164,19 @@ func (h *BookingHandler) UpdateBooking(c *gin.Context) {
 
 	var input model.UpdateBookingInput
 	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	booking := model.Booking{
+		RoomID:    existing.RoomID,
+		UserID:    existing.UserID,
+		StartTime: *input.StartTime,
+		EndTime:   *input.EndTime,
+		Status:    existing.Status,
+	}
+
+	if err := booking.Validate(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

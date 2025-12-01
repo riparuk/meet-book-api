@@ -90,5 +90,14 @@ func (b *Booking) Validate() error {
 		return fmt.Errorf("end time must be after start time")
 	}
 
+	// Validasi bahwa waktu harus dalam jam bulat (menit, detik, dan nanodetik harus 0)
+	if b.StartTime.Minute() != 0 || b.StartTime.Second() != 0 || b.StartTime.Nanosecond() != 0 {
+		return fmt.Errorf("start time should be on the hour (minutes and seconds must be 0)")
+	}
+
+	if b.EndTime.Minute() != 0 || b.EndTime.Second() != 0 || b.EndTime.Nanosecond() != 0 {
+		return fmt.Errorf("end time should be on the hour (minutes and seconds must be 0)")
+	}
+
 	return nil
 }
