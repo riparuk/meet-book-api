@@ -1,87 +1,129 @@
-Simple Go Gin Starter include :
-- JWT Auth
-- Postgres Database
-- Swagger
+# Meet Book API
 
-### Flow Logic Pattern :
-Router → Handler
-Handler → Repository → Database
+A RESTful API for managing meeting room bookings, built with Go, Gin, and PostgreSQL.
 
-### Install swag
+## Features
+
+- 🔐 JWT Authentication
+- 📅 Meeting Room Booking System
+- 🗄️ PostgreSQL Database
+- 📚 Auto-generated API Documentation with Swagger
+- 🐳 Docker Support
+- 🔄 Database Migrations
+- 🧪 Testing Setup
+
+## Tech Stack
+
+- **Framework**: Gin
+- **Database**: PostgreSQL
+- **ORM**: GORM
+- **API Docs**: Swagger
+- **Containerization**: Docker
+
+## Prerequisites
+
+- Go 1.23+
+- PostgreSQL 13+
+- Docker (optional)
+- Make (recommended)
+
+## Quick Start
+
+### 1. Clone the Repository
+
 ```bash
-go install github.com/swaggo/swag/cmd/swag@latest
+git clone https://github.com/yourusername/meet-book-api.git
+cd meet-book-api
 ```
 
-### How to run :
-```bash
-go run cmd/server/main.go
-```
-
-### Generate docs :
-```bash
-swag init -g cmd/server/main.go -o ./docs/
-```
-
-### Using Makefile (easy way)
-If you have a `Makefile`, you can run:
+### 2. Setup Environment
 
 ```bash
-make run
+cp .env.example .env
+# Edit .env with your configuration
 ```
-it will generate docs and run the app
+
+### 3. Install Dependencies
 
 ```bash
-make clean
+go mod download
 ```
-it will migrate the database with clean option (drop all tables first)
+
+### 4. Run Migrations
 
 ```bash
 make migrate
 ```
-it will migrate the database
+
+### 5. Start the Server
 
 ```bash
-make seed
+make run
 ```
-it will seed the database
+
+The API will be available at `http://localhost:8080`
+
+## API Documentation
+
+After starting the server, access the interactive API documentation at:
+- Swagger UI: http://localhost:8080/swagger/index.html
+
+## Available Commands
+
+| Command         | Description                                      |
+|-----------------|--------------------------------------------------|
+| `make run`      | Start the development server                     |
+| `make build`    | Build the application                            |
+| `make test`     | Run tests                                        |
+| `make migrate`  | Run database migrations                          |
+| `make seed`     | Seed the database with sample data               |
+| `make clean`    | Reset the database (drops all tables)            |
+| `make docs`     | Generate API documentation                       |
+
+## Environment Variables
+
+| Variable               | Description                          | Default                          |
+|------------------------|--------------------------------------|----------------------------------|
+| `DATABASE_DIRECT_URL`  | PostgreSQL connection string         | `postgres://user:pass@host/db`   |
+| `JWT_SECRET`           | Secret key for JWT tokens            | `your-secret-key`                |
+| `MASTER_PASSWORD`      | Master password for admin creation    | `secret-master`                  |
+| `PORT`                 | Server port                          | `8080`                           |
+
+## Running with Docker
+
+### Using Docker Compose (Recommended)
 
 ```bash
-make build
-```
-it will build the app
-
-```bash
-make test
-```
-it will run the test
-
-
-## Links
-- [Swagger](http://localhost:8080/swagger/index.html)
-
-## How to run with docker-compose
-Pastikan file .env sudah sesuai:
-bash
-cp .env.example .env
-configurasi file .env, lihat .env.example
-
-# Pastikan konfigurasi database di .env sesuai dengan yang di docker-compose.yaml
-
-Build dan jalankan aplikasi:
-bash
-# Build image dan start container
+# Start all services
 docker-compose up -d
 
-# Lihat log migration
-docker-compose logs -f migrate
-Atau jalankan migrasi secara terpisah:
-bash
-# Hanya jalankan migrasi
-docker-compose run --rm migrate
-Setelah migrasi selesai, aplikasi akan berjalan di:
-http://localhost:8080
+# View logs
+docker-compose logs -f app
+```
 
+### Manual Docker Build
 
-# How to create admin user :
-- create in swagger with master password, if not set master password, it will create user with role `user`
-http://localhost:8080/swagger/index.html#/auth/post_auth_register
+```bash
+# Build the image
+docker build -t meet-book-api .
+
+# Run the container
+docker run -p 8080:8080 --env-file .env meet-book-api
+```
+
+## Creating Admin Users
+
+1. Register a new user through the `/auth/register` endpoint
+2. Include the `master_password` field in your request with the value from your `.env` file
+3. The user will be created with admin privileges
+
+## Database Schema
+
+The database schema includes the following tables:
+- `users` - User accounts and authentication
+- `rooms` - Meeting rooms
+- `bookings` - Room reservations
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
