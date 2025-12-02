@@ -5,7 +5,7 @@
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Ovo_KZeQdayD95uYotkX-1" parent="1" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Users" vertex="1">
-          <mxGeometry height="210" width="140" x="390" y="350" as="geometry" />
+          <mxGeometry height="210" width="140" x="490" y="350" as="geometry" />
         </mxCell>
         <mxCell id="Ovo_KZeQdayD95uYotkX-2" parent="Ovo_KZeQdayD95uYotkX-1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="id" vertex="1">
           <mxGeometry height="30" width="140" y="30" as="geometry" />
@@ -69,6 +69,12 @@
         </mxCell>
         <mxCell id="Ovo_KZeQdayD95uYotkX-20" parent="Ovo_KZeQdayD95uYotkX-15" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" value="updated_at" vertex="1">
           <mxGeometry height="30" width="215" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="Ovo_KZeQdayD95uYotkX-24" edge="1" parent="1" source="Ovo_KZeQdayD95uYotkX-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Ovo_KZeQdayD95uYotkX-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Ovo_KZeQdayD95uYotkX-25" edge="1" parent="1" source="Ovo_KZeQdayD95uYotkX-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Ovo_KZeQdayD95uYotkX-1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
