@@ -58,3 +58,30 @@ it will run the test
 
 ## Links
 - [Swagger](http://localhost:8080/swagger/index.html)
+
+## How to run with docker-compose
+Pastikan file .env sudah sesuai:
+bash
+cp .env.example .env
+configurasi file .env, lihat .env.example
+
+# Pastikan konfigurasi database di .env sesuai dengan yang di docker-compose.yaml
+
+Build dan jalankan aplikasi:
+bash
+# Build image dan start container
+docker-compose up -d
+
+# Lihat log migration
+docker-compose logs -f migrate
+Atau jalankan migrasi secara terpisah:
+bash
+# Hanya jalankan migrasi
+docker-compose run --rm migrate
+Setelah migrasi selesai, aplikasi akan berjalan di:
+http://localhost:8080
+
+
+# How to create admin user :
+- create in swagger with master password, if not set master password, it will create user with role `user`
+http://localhost:8080/swagger/index.html#/auth/post_auth_register

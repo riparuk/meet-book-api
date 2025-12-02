@@ -110,6 +110,9 @@ definitions:
       email:
         example: riparuk@gmail.com
         type: string
+      master_password:
+        example: secret-master
+        type: string
       name:
         example: Rifa Faruqi
         type: string

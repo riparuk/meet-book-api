@@ -959,6 +959,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "riparuk@gmail.com"
                 },
+                "master_password": {
+                    "type": "string",
+                    "example": "secret-master"
+                },
                 "name": {
                     "type": "string",
                     "example": "Rifa Faruqi"

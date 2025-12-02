@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/riparuk/meet-book-api/internal/model"
 	"github.com/riparuk/meet-book-api/internal/repository"
@@ -81,6 +82,22 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
+	role := model.RoleUser
+	if req.MasterPassword != "" {
+		masterPassword := os.Getenv("MASTER_PASSWORD")
+		if masterPassword == "" {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Master password not configured"})
+			return
+		}
+
+		if req.MasterPassword != masterPassword {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Invalid master password"})
+			return
+		}
+
+		role = model.RoleAdmin
+	}
+
 	// Check if email already exists
 	_, err := h.repo.FindByEmail(req.Email)
 	if err == nil {
@@ -98,7 +115,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Email:    req.Email,
 		Name:     req.Name,
 		Password: string(hashedPassword),
-		Role:     model.RoleUser, // Set default role to 'user'
+		Role:     role,
 	}
 
 	if err := h.repo.Create(&user); err != nil {
