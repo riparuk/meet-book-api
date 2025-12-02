@@ -46,7 +46,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := utils.GenerateJWT(user.ID.String())
+	token, err := utils.GenerateJWT(user.ID.String(), user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
@@ -59,6 +59,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 				"id":    user.ID,
 				"email": user.Email,
 				"name":  user.Name,
+				"role":  user.Role,
 			},
 		},
 	})
@@ -97,6 +98,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		Email:    req.Email,
 		Name:     req.Name,
 		Password: string(hashedPassword),
+		Role:     model.RoleUser, // Set default role to 'user'
 	}
 
 	if err := h.repo.Create(&user); err != nil {

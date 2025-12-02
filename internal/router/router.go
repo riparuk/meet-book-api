@@ -8,6 +8,11 @@ import (
 	"github.com/riparuk/meet-book-api/internal/repository"
 )
 
+const (
+	RoleAdmin = "admin"
+	RoleUser  = "user"
+)
+
 func SetupRoutes(r *gin.Engine) {
 	authRepo := repository.NewUserRepository(database.DB)
 	userRepo := repository.NewUserRepository(database.DB)
@@ -21,18 +26,22 @@ func SetupRoutes(r *gin.Engine) {
 
 	api := r.Group("/api")
 	{
-		users := api.Group("/users")
-		{
-			users.GET("", userHandler.GetUsers)
-			users.POST("", userHandler.CreateUser)
-		}
-
+		// Public routes
 		auth := api.Group("/auth")
 		{
 			auth.POST("/login", authHandler.Login)
 			auth.POST("/register", authHandler.Register)
 		}
 
+		// Protected user routes
+		users := api.Group("/users")
+		users.Use(middleware.JWTAuthMiddleware())
+		{
+			users.GET("", middleware.RequireRole(RoleAdmin), userHandler.GetUsers)    // Only admin can list all users
+			users.POST("", middleware.RequireRole(RoleAdmin), userHandler.CreateUser) // Only admin can create users
+		}
+
+		// User profile routes
 		me := api.Group("/me")
 		me.Use(middleware.JWTAuthMiddleware())
 		{
@@ -41,17 +50,28 @@ func SetupRoutes(r *gin.Engine) {
 			me.GET("/bookings", userHandler.GetMyBookings)
 		}
 
+		// Room routes
 		rooms := api.Group("/rooms")
 		{
+			// Public routes
 			rooms.GET("", roomHandler.GetRooms)
-			rooms.POST("", roomHandler.CreateRoom)
 			rooms.GET("/:id", roomHandler.GetRoom)
-			rooms.PUT("/:id", roomHandler.UpdateRoom)
-			rooms.DELETE("/:id", roomHandler.DeleteRoom)
+
+			// Admin-only routes
+			adminRooms := rooms.Group("")
+			adminRooms.Use(middleware.JWTAuthMiddleware(), middleware.RequireRole(RoleAdmin))
+			{
+				adminRooms.POST("", roomHandler.CreateRoom)
+				adminRooms.PUT("/:id", roomHandler.UpdateRoom)
+				adminRooms.DELETE("/:id", roomHandler.DeleteRoom)
+			}
 		}
 
+		// Booking routes
 		bookings := api.Group("/bookings")
+		bookings.Use(middleware.JWTAuthMiddleware())
 		{
+			// User routes
 			bookings.GET("/upcoming", bookingHandler.GetUpcomingBookings)
 			bookings.POST("", bookingHandler.CreateBooking)
 			bookings.GET("/:id", bookingHandler.GetBooking)

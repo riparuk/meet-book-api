@@ -83,10 +83,15 @@ definitions:
       password:
         example: strongpassword
         type: string
+      role:
+        allOf:
+        - $ref: '#/definitions/model.UserRole'
+        example: user
     required:
     - email
     - name
     - password
+    - role
     type: object
   model.LoginRequest:
     properties:
@@ -160,9 +165,19 @@ definitions:
         type: string
       name:
         type: string
+      role:
+        $ref: '#/definitions/model.UserRole'
       updated_at:
         type: string
     type: object
+  model.UserRole:
+    enum:
+    - user
+    - admin
+    type: string
+    x-enum-varnames:
+    - RoleUser
+    - RoleAdmin
 info:
   contact:
     email: support@swagger.io
@@ -238,6 +253,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/model.BookingResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new booking
       tags:
       - bookings
@@ -257,6 +274,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.BookingResponse'
+      security:
+      - BearerAuth: []
       summary: Get a booking by ID
       tags:
       - bookings
@@ -283,6 +302,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.BookingResponse'
+      security:
+      - BearerAuth: []
       summary: Update a booking
       tags:
       - bookings
@@ -302,6 +323,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.BookingResponse'
+      security:
+      - BearerAuth: []
       summary: Cancel a booking
       tags:
       - bookings
@@ -326,6 +349,8 @@ paths:
                   $ref: '#/definitions/model.BookingResponse'
                 type: array
             type: object
+      security:
+      - BearerAuth: []
       summary: Get bookings for a specific room
       tags:
       - bookings
@@ -374,6 +399,8 @@ paths:
               error:
                 type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Get bookings for a specific room on a specific date
       tags:
       - bookings
@@ -389,6 +416,8 @@ paths:
             items:
               $ref: '#/definitions/model.BookingResponse'
             type: array
+      security:
+      - BearerAuth: []
       summary: Get upcoming bookings
       tags:
       - bookings
@@ -410,6 +439,8 @@ paths:
             items:
               $ref: '#/definitions/model.BookingResponse'
             type: array
+      security:
+      - BearerAuth: []
       summary: Get all bookings for a user
       tags:
       - bookings
@@ -530,6 +561,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/model.Room'
+      security:
+      - BearerAuth: []
       summary: Create a new room
       tags:
       - rooms
@@ -547,6 +580,8 @@ paths:
       responses:
         "204":
           description: No Content
+      security:
+      - BearerAuth: []
       summary: Delete a room
       tags:
       - rooms
@@ -591,6 +626,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.Room'
+      security:
+      - BearerAuth: []
       summary: Update a room
       tags:
       - rooms
@@ -608,6 +645,8 @@ paths:
             items:
               $ref: '#/definitions/model.User'
             type: array
+      security:
+      - BearerAuth: []
       summary: Get all users
       tags:
       - users
@@ -629,6 +668,8 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/model.User'
+      security:
+      - BearerAuth: []
       summary: Create a new user
       tags:
       - users

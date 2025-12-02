@@ -93,6 +93,11 @@ const docTemplate = `{
         },
         "/bookings": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new room booking",
                 "consumes": [
                     "application/json"
@@ -127,6 +132,11 @@ const docTemplate = `{
         },
         "/bookings/room/{room_id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a list of all bookings for a specific room",
                 "produces": [
                     "application/json"
@@ -164,6 +174,11 @@ const docTemplate = `{
         },
         "/bookings/room/{room_id}/{date}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a list of all bookings for a specific room on a specific date with optional status filter",
                 "produces": [
                     "application/json"
@@ -236,6 +251,11 @@ const docTemplate = `{
         },
         "/bookings/upcoming": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a list of all upcoming bookings",
                 "produces": [
                     "application/json"
@@ -259,6 +279,11 @@ const docTemplate = `{
         },
         "/bookings/users/{user_id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all bookings for a specific user",
                 "produces": [
                     "application/json"
@@ -291,6 +316,11 @@ const docTemplate = `{
         },
         "/bookings/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get a booking by its ID",
                 "produces": [
                     "application/json"
@@ -318,6 +348,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update an existing booking",
                 "consumes": [
                     "application/json"
@@ -359,6 +394,11 @@ const docTemplate = `{
         },
         "/bookings/{id}/cancel": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Cancel an existing booking",
                 "produces": [
                     "application/json"
@@ -545,6 +585,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new meeting room",
                 "consumes": [
                     "application/json"
@@ -606,6 +651,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update an existing room",
                 "consumes": [
                     "application/json"
@@ -645,6 +695,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Delete a room by ID",
                 "produces": [
                     "application/json"
@@ -671,6 +726,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get all users",
                 "consumes": [
                     "application/json"
@@ -695,6 +755,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new user",
                 "consumes": [
                     "application/json"
@@ -839,7 +904,8 @@ const docTemplate = `{
             "required": [
                 "email",
                 "name",
-                "password"
+                "password",
+                "role"
             ],
             "properties": {
                 "email": {
@@ -853,6 +919,14 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "example": "strongpassword"
+                },
+                "role": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.UserRole"
+                        }
+                    ],
+                    "example": "user"
                 }
             }
         },
@@ -961,10 +1035,24 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "role": {
+                    "$ref": "#/definitions/model.UserRole"
+                },
                 "updated_at": {
                     "type": "string"
                 }
             }
+        },
+        "model.UserRole": {
+            "type": "string",
+            "enum": [
+                "user",
+                "admin"
+            ],
+            "x-enum-varnames": [
+                "RoleUser",
+                "RoleAdmin"
+            ]
         }
     },
     "securityDefinitions": {

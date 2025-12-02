@@ -100,6 +100,7 @@ func (h *UserHandler) CreateMyBooking(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {array} model.User
 // @Router /users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
@@ -117,6 +118,7 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param name body model.CreateUserInput true "name"
 // @Success 201 {object} model.User
 // @Router /users [post]

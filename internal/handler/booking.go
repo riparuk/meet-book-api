@@ -24,6 +24,7 @@ func NewBookingHandler(repo repository.BookingRepository) *BookingHandler {
 // @Tags bookings
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param input body model.CreateBookingInput true "Booking details"
 // @Success 201 {object} model.BookingResponse
 // @Router /bookings [post]
@@ -81,6 +82,7 @@ func (h *BookingHandler) CreateBooking(c *gin.Context) {
 // @Description Get a booking by its ID
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Booking ID"
 // @Success 200 {object} model.BookingResponse
 // @Router /bookings/{id} [get]
@@ -110,6 +112,7 @@ func (h *BookingHandler) GetBooking(c *gin.Context) {
 // @Description Get all bookings for a specific user
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Param user_id path string true "User ID"
 // @Success 200 {array} model.BookingResponse
 // @Router /bookings/users/{user_id} [get]
@@ -140,6 +143,7 @@ func (h *BookingHandler) GetUserBookings(c *gin.Context) {
 // @Tags bookings
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Booking ID"
 // @Param input body model.UpdateBookingInput true "Booking update details"
 // @Success 200 {object} model.BookingResponse
@@ -218,6 +222,7 @@ func (h *BookingHandler) UpdateBooking(c *gin.Context) {
 // @Description Cancel an existing booking
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Booking ID"
 // @Success 200 {object} model.BookingResponse
 // @Router /bookings/{id}/cancel [post]
@@ -258,6 +263,7 @@ func (h *BookingHandler) CancelBooking(c *gin.Context) {
 // @Description Get a list of all upcoming bookings
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Success 200 {array} model.BookingResponse
 // @Router /bookings/upcoming [get]
 func (h *BookingHandler) GetUpcomingBookings(c *gin.Context) {
@@ -280,6 +286,7 @@ func (h *BookingHandler) GetUpcomingBookings(c *gin.Context) {
 // @Description Get a list of all bookings for a specific room
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Param room_id path string true "Room ID"
 // @Success 200 {object} object{data=[]model.BookingResponse}
 // @Router /bookings/room/{room_id} [get]
@@ -309,6 +316,7 @@ func (h *BookingHandler) GetRoomBookings(c *gin.Context) {
 // @Description Get a list of all bookings for a specific room on a specific date with optional status filter
 // @Tags bookings
 // @Produce json
+// @Security BearerAuth
 // @Param room_id path string true "Room ID"
 // @Param date path string true "Date (format: YYYY-MM-DD)"
 // @Param status query string false "Filter by status (e.g., 'active', 'cancelled')"

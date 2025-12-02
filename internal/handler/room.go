@@ -23,6 +23,7 @@ func NewRoomHandler(repo repository.RoomRepository) *RoomHandler {
 // @Tags rooms
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param input body model.CreateRoomInput true "Room details"
 // @Success 201 {object} model.Room
 // @Router /rooms [post]
@@ -97,6 +98,7 @@ func (h *RoomHandler) GetRoom(c *gin.Context) {
 // @Tags rooms
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Room ID"
 // @Param input body model.UpdateRoomInput true "Room details"
 // @Success 200 {object} model.Room
@@ -140,6 +142,7 @@ func (h *RoomHandler) UpdateRoom(c *gin.Context) {
 // @Description Delete a room by ID
 // @Tags rooms
 // @Produce json
+// @Security BearerAuth
 // @Param id path string true "Room ID"
 // @Success 204 "No Content"
 // @Router /rooms/{id} [delete]

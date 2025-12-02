@@ -27,15 +27,16 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString := parts[1]
-		userID, err := utils.ValidateJWT(tokenString)
+		userID, userRole, err := utils.ValidateJWT(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired token"})
 			c.Abort()
 			return
 		}
 
-		// Set userID to context
+		// Set userID and role to context
 		c.Set("user_id", userID)
+		c.Set("user_role", userRole)
 		c.Next()
 	}
 }
