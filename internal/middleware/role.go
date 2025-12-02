@@ -3,11 +3,13 @@ package middleware
 import (
 	"net/http"
 
+	"github.com/riparuk/meet-book-api/internal/model"
+
 	"github.com/gin-gonic/gin"
 )
 
 // RequireRole checks if the user has the required role
-func RequireRole(requiredRole string) gin.HandlerFunc {
+func RequireRole(requiredRole model.UserRole) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userRole, exists := c.Get("user_role")
 		if !exists {
@@ -15,7 +17,7 @@ func RequireRole(requiredRole string) gin.HandlerFunc {
 			return
 		}
 
-		if userRole != requiredRole {
+		if userRole.(model.UserRole) != requiredRole {
 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "insufficient permissions"})
 			return
 		}

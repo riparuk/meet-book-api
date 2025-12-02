@@ -8,11 +8,6 @@ import (
 	"github.com/riparuk/meet-book-api/internal/repository"
 )
 
-const (
-	RoleAdmin = "admin"
-	RoleUser  = "user"
-)
-
 func SetupRoutes(r *gin.Engine) {
 	authRepo := repository.NewUserRepository(database.DB)
 	userRepo := repository.NewUserRepository(database.DB)
@@ -37,8 +32,8 @@ func SetupRoutes(r *gin.Engine) {
 		users := api.Group("/users")
 		users.Use(middleware.JWTAuthMiddleware())
 		{
-			users.GET("", middleware.RequireRole(RoleAdmin), userHandler.GetUsers)    // Only admin can list all users
-			users.POST("", middleware.RequireRole(RoleAdmin), userHandler.CreateUser) // Only admin can create users
+			users.GET("", middleware.RequireRole("admin"), userHandler.GetUsers)    // Only admin can list all users
+			users.POST("", middleware.RequireRole("admin"), userHandler.CreateUser) // Only admin can create users
 		}
 
 		// User profile routes
@@ -59,7 +54,7 @@ func SetupRoutes(r *gin.Engine) {
 
 			// Admin-only routes
 			adminRooms := rooms.Group("")
-			adminRooms.Use(middleware.JWTAuthMiddleware(), middleware.RequireRole(RoleAdmin))
+			adminRooms.Use(middleware.JWTAuthMiddleware(), middleware.RequireRole("admin"))
 			{
 				adminRooms.POST("", roomHandler.CreateRoom)
 				adminRooms.PUT("/:id", roomHandler.UpdateRoom)
